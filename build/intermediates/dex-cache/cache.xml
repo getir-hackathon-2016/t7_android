@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/erkam/Desktop/GetirHackathon2/app/build/intermediates/exploded-aar/fr.tvbarthel.blurdialogfragment/lib/2.1.5/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="21ca83beb33e223187afd37fce40bdd080a98290">
+        <dex dex="/Users/erkam/Desktop/GetirHackathon2/app/build/intermediates/pre-dexed/debug/classes-76464dd02f5efb6ff7fecb31e012510c8aeba732.jar" />
+    </item>
+    <item
+        jar="/Users/erkam/Library/Android/sdk/build-tools/23.0.2/renderscript/lib/renderscript-v8.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="762016371811e15a66e97cf27f3e852bf287aaf3">
+        <dex dex="/Users/erkam/Desktop/GetirHackathon2/app/build/intermediates/pre-dexed/debug/renderscript-v8-9d390f3f8d1987e346324f78d17c37cf1ab08429.jar" />
+    </item>
+
+</items>

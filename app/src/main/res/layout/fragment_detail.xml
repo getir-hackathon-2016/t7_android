@@ -1,0 +1,90 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="com.getirhackathon.activity.DetailFragment">
+
+    <RelativeLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dip"
+        >
+        <RelativeLayout
+            android:id="@+id/view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#EFEFEF"
+            android:padding="5dp"
+            android:elevation="2dp">
+
+            <ImageView
+                android:id="@+id/productImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:src="@drawable/redbull"
+                />
+
+            <TextView
+                android:id="@+id/productNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/productImageView"
+                android:text="Redbull"
+                android:padding="5dp"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/productPriceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/productNameTextView"
+                android:text="1.50 TL"
+                android:padding="5dp"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:id="@+id/addButton"
+                android:background="#ffffff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/counter"
+                android:layout_alignRight="@+id/productImageView"
+                android:layout_alignLeft="@+id/productImageView"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_add_shopping_cart_black_24dp"
+                android:layout_centerHorizontal="true"
+                android:padding="5dp"/>
+
+            <LinearLayout
+                android:id="@+id/counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/productImageView"
+                android:layout_alignRight="@+id/productImageView"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/upButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_keyboard_arrow_up_black_24dp"/>
+
+                <TextView
+                    android:id="@+id/counterTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+                <ImageView
+                    android:id="@+id/downButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>
