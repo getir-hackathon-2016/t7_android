@@ -4,17 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.getirhackathon.activity.DetailFragment;
 import com.getirhackathon.activity.DrawerFragment;
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
     }
 
     private void displayView(int position) {
+
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.replace(R.id.container_body, fragment).addToBackStack("frag");
             fragmentTransaction.commit();
 
             // set the toolbar title
@@ -102,6 +103,20 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this ,"adgadg" ,Toast.LENGTH_SHORT).show();
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
     }
 
     @Override
