@@ -73,9 +73,9 @@ public class ProductsFragment extends Fragment {
                                 App.getInstance().getPref().edit()
                                         .putString("STORE_ID", response.getString("store_id")).commit();
                                 App.getInstance().getPref().edit()
-                                        .putString("STORE_LAT", response.getString("lat")).commit();
+                                        .putLong("STORE_LAT", response.getLong("lat")).commit();
                                 App.getInstance().getPref().edit()
-                                        .putString("STORE_LNG", response.getString("lng")).commit();
+                                        .putLong("STORE_LNG", response.getLong("lng")).commit();
                                 // Parsing json array response
                                 // loop through each json object
                                 for (int i = 0; i < products.length(); i++) {
