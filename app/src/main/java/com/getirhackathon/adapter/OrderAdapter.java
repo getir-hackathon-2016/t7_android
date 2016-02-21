@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.getirhackathon.App;
 import com.getirhackathon.MainActivity;
 import com.getirhackathon.R;
 import com.getirhackathon.activity.DetailFragment;
@@ -42,14 +43,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         }
     }
 
-    public void remove(String item) {
-        int position = mProductList.indexOf(item);
-        mProductList.remove(position);
-        mCountList.remove(position);
-        notifyItemRemoved(position);
-    }
-
-
     @Override
     public OrderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
@@ -70,20 +63,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.productNameTextView.setText(mProductList.get(position).getName());
         holder.productPriceTextView.setText("₺ " + Float.parseFloat(mProductList.get(position).getPrice())
                                                                                 * mCountList.get(position));
+        holder.counterTextView.setText(App.getInstance().getSepet().get(mProductList.get(position)));
         ImageLoader.getInstance()
                 .displayImage(mProductList.get(position).getImgUrl(), holder.productImageView);
     }
 
-    public void switchContent(DetailFragment fragment) {
-        if (mContext == null)
-            return;
-        if (mContext instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity) mContext;
-            DetailFragment frag = fragment;
-            mainActivity.switchContent(frag);
-        }
-
-    }
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
@@ -95,6 +79,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         // each data item is just a string in this case
         public TextView productNameTextView;
         public TextView productPriceTextView;
+        public TextView counterTextView;
         public ImageView productImageView;
         public RelativeLayout view;
 
@@ -102,8 +87,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             super(v);
             productNameTextView = (TextView) v.findViewById(R.id.productNameTextView);
             productPriceTextView = (TextView) v.findViewById(R.id.productPriceTextView);
+            counterTextView = (TextView) v.findViewById(R.id.counterTextView);
             productImageView = (ImageView) v.findViewById(R.id.productImageView);
             view = (RelativeLayout) v.findViewById(R.id.view);
+
 
 
         }

@@ -82,7 +82,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     private void fragmentJump(Product product) {
-
         DetailFragment mFragment = new DetailFragment();
         Bundle mBundle = new Bundle();
         mBundle.putString("selectedProduct", new Gson().toJson(product));

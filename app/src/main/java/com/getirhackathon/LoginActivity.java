@@ -223,6 +223,12 @@ public class LoginActivity extends Activity {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d("INFO",response.toString());
+                            try {
+                                if(response.getBoolean("success"))
+                                App.getInstance().getPref().edit().putString("TOKEN",response.getString("token"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override

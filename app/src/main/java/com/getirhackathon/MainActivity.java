@@ -1,6 +1,7 @@
 package com.getirhackathon;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,16 +12,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.getirhackathon.activity.DetailFragment;
 import com.getirhackathon.activity.DrawerFragment;
 import com.getirhackathon.activity.ProductsFragment;
 import com.getirhackathon.activity.SepetFragment;
 import com.getirhackathon.activity.TakipFragment;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 
 public class MainActivity extends AppCompatActivity implements DrawerFragment.FragmentDrawerListener{
 
@@ -29,26 +41,84 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
     private DrawerFragment drawerFragment;
     private Toolbar mToolbar;
     private SharedPreferences pref;
+    private static Socket mSocket;
+    private ProgressDialog dialog;
+    {
+        try {
+            mSocket = IO.socket("https://getir-hackathon.herokuapp.com/");
+        } catch (URISyntaxException e) {}
+    }
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+/*                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            if(data.getBoolean("success")){
+                                App.getInstance().addToSepet(Integer.parseInt(data.getString("product_id")),
+                                                        Integer.parseInt(data.getString("order_count")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+  */                      Log.d("SOCKET:INFO", args[0] + "");
+
+                    }
+                });
+        }
+    };
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSocket.on("status",onNewMessage);
+        mSocket.on("order_message",onNewMessage);
+        mSocket.on("message",onNewMessage);
+        mSocket.connect();
+        dialog = new ProgressDialog(this);
+        //Assign toolbar..
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        pref = this.getSharedPreferences(
-                "GETIR", Context.MODE_PRIVATE);
-        if(pref.getString("token",null)==null)
-            startActivityForResult(new Intent(MainActivity.this, LoginActivity.class),1);
-
+        //Set the toolbar as default actionbar
         setSupportActionBar(mToolbar);
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        //Navigation drawer menü..
         drawerFragment = (DrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
         drawerFragment.setDrawerListener(this);
 
-        // display the first navigation drawer view on app launch
+        //Check credentials..
+        pref = this.getSharedPreferences(
+                "GETIR", Context.MODE_PRIVATE);
+        if(pref.getString("token",null)==null)
+            startActivityForResult(new Intent(MainActivity.this, LoginActivity.class),1);
+
+        //Display the first navigation drawer view on app launch
         displayView(0);
+    }
+
+    public void attemptSend(String message) {
+        dialog.setCancelable(false);
+        dialog.setIndeterminate(true);
+        dialog.show();
+        if (TextUtils.isEmpty(message))
+            return;
+        mSocket.emit("order", message, new Ack() {
+            @Override
+            public void call(Object... args) {
+                Log.d("SOCKET:IO",args[0]+"");
+            }
+        });
+
     }
 
     private void displayView(int position) {
@@ -74,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.replace(R.id.container_body, fragment).addToBackStack("frag");
             fragmentTransaction.commit();
 
             // set the toolbar title
@@ -82,27 +152,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -116,9 +166,23 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
             }
         }
     }
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "adgadg", Toast.LENGTH_SHORT).show();
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
+    }
 
     @Override
     public void onDrawerItemSelected(View view, int position) {
+        Log.d("INFO","seleected");
         displayView(position);
     }
 

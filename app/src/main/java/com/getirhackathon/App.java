@@ -1,6 +1,7 @@
 package com.getirhackathon;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +13,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.getirhackathon.model.Product;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -19,6 +23,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 /**
@@ -29,16 +34,20 @@ public class App extends Application {
     public static final String TAG = App.class.getSimpleName();
     private static App mInstance;
     private RequestQueue mRequestQueue;
-    private static ImageLoader mImageLoader;
-
-
     private HashMap<Product, Integer> sepet = new HashMap<>();
+    private HashMap<Integer, Integer> lastOrder = new HashMap<>();
     private Location location;
 
+    public SharedPreferences getPref() {
+        return pref;
+    }
+
+    private SharedPreferences pref;
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        pref = getSharedPreferences("GETIR",MODE_PRIVATE);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .denyCacheImageMultipleSizesInMemory()
@@ -60,7 +69,16 @@ public class App extends Application {
 
     public void addToSepet(Product product, int newCount) {
         int count = sepet.get(product) != null ? sepet.get(product) : 0;
+        Log.d("INFO",sepet.containsKey(product) + "");
         sepet.put(product, newCount);
+        //TODO
+
+
+    }
+
+    public void addToSepet(int productId, int newCount) {
+        int count = sepet.get(productId) != null ? sepet.get(productId) : 0;
+        lastOrder.put(productId, newCount + count);
 
     }
 
