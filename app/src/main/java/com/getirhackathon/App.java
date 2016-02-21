@@ -91,7 +91,7 @@ public class App extends Application {
                 public void run() {
                         mHandler.obtainMessage(1).sendToTarget();
                     }
-            },5000);
+            },30000);
 
         }
 
