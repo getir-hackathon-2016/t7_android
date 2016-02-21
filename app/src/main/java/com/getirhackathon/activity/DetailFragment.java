@@ -99,7 +99,7 @@ public class DetailFragment extends BlurDialogFragment {
                 SharedPreferences pref = getActivity().getSharedPreferences("GETIR",Context.MODE_PRIVATE);
                 Order order = new Order().setOrderCount(counterTextView.getText().toString())
                                         .setProductId(product.getId()+"")
-                                        .setStoreId(pref.getString("STORE_ID",""))
+                                        .setStoreId(pref.getString("STORE_ID","1"))
                                         .setToken(pref.getString("TOKEN","0"));
                 Log.d("DATA TO SOCKET",new Gson().toJson(order));
                 ((MainActivity)getActivity()).attemptSend(new Gson().toJson(order));

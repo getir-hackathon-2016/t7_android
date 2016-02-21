@@ -3,8 +3,11 @@ package com.getirhackathon;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +28,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by erkam on 20.02.2016.
@@ -37,6 +42,7 @@ public class App extends Application {
     private HashMap<Product, Integer> sepet = new HashMap<>();
     private HashMap<Integer, Integer> lastOrder = new HashMap<>();
     private Location location;
+    private boolean timerOn = false;
 
     public SharedPreferences getPref() {
         return pref;
@@ -68,6 +74,28 @@ public class App extends Application {
     }
 
     public void addToSepet(Product product, int newCount) {
+
+        if(!timerOn){
+            timerOn=true;
+            final Handler mHandler = new Handler() {
+                public void handleMessage(Message msg) {
+                    sepet.clear();
+                    lastOrder.clear();
+                    Toast.makeText(getApplicationContext(),"Zaman aşımından dolayı sepetiniz iptal edildi",Toast.LENGTH_LONG).show();
+                    timerOn=false;
+                }
+            };
+            Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                        mHandler.obtainMessage(1).sendToTarget();
+                    }
+            },5000);
+
+        }
+
+
         int count = sepet.get(product) != null ? sepet.get(product) : 0;
         Log.d("INFO",sepet.containsKey(product) + "");
         sepet.put(product, newCount);

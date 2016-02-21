@@ -63,7 +63,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.productNameTextView.setText(mProductList.get(position).getName());
         holder.productPriceTextView.setText("₺ " + Float.parseFloat(mProductList.get(position).getPrice())
                                                                                 * mCountList.get(position));
-        holder.counterTextView.setText(App.getInstance().getSepet().get(mProductList.get(position)));
+        holder.counterTextView.setText(""+App.getInstance().getSepet().get(mProductList.get(position)));
         ImageLoader.getInstance()
                 .displayImage(mProductList.get(position).getImgUrl(), holder.productImageView);
     }

@@ -1,0 +1,18 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=52:D8:D9:62:A0:1E:57:67:73:C0:CA:77:9C:FE:75:9E:8B:77:73:55%3Bcom.getirhackathon.activity
+
+    You can also add your credentials to an existing key, using this line:
+    52:D8:D9:62:A0:1E:57:67:73:C0:CA:77:9C:FE:75:9E:8B:77:73:55;com.getirhackathon.activity
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+        AIzaSyDz1NXl1QX7xmalUW5x1ZreqnhldXmZgck
+    </string>
+</resources>

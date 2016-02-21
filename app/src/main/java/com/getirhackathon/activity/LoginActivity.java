@@ -1,4 +1,4 @@
-package com.getirhackathon;
+package com.getirhackathon.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -27,11 +27,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.getirhackathon.App;
+import com.getirhackathon.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -196,7 +199,6 @@ public class LoginActivity extends Activity {
     }
 
 
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -205,7 +207,7 @@ public class LoginActivity extends Activity {
 
         private final String mEmail;
         private final String mPassword;
-
+        private boolean error=false;
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
@@ -222,10 +224,14 @@ public class LoginActivity extends Activity {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d("INFO",response.toString());
+                            Log.d("INFO", response.toString());
                             try {
-                                if(response.getBoolean("success"))
-                                App.getInstance().getPref().edit().putString("TOKEN",response.getString("token"));
+                                if (response.getBoolean("success")) {
+                                    App.getInstance().getPref().edit().putString("TOKEN", response.getString("token")).commit();
+                                } else {
+                                    Toast.makeText(LoginActivity.this,response.getString("message"),Toast.LENGTH_SHORT).show();
+                                    error=true;
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -237,6 +243,7 @@ public class LoginActivity extends Activity {
                 }
             });
 
+
             /*for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
@@ -245,7 +252,9 @@ public class LoginActivity extends Activity {
                 }
             }*/
 
-            // TODO: register the new account here.
+            if(error)
+                return false;
+
             return true;
         }
 
@@ -259,7 +268,7 @@ public class LoginActivity extends Activity {
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError("Hatalı giriş");
                 mPasswordView.requestFocus();
             }
         }

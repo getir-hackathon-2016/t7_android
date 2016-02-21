@@ -103,8 +103,6 @@ public class ProductsFragment extends Fragment {
             // Add the request to the queue
             Volley.newRequestQueue(getActivity()).add(req);
         }
-
-
         // Inflate the layout for this fragment
         return v;
     }

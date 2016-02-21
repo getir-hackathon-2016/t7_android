@@ -5,22 +5,21 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.getirhackathon.activity.DetailFragment;
 import com.getirhackathon.activity.DrawerFragment;
+import com.getirhackathon.activity.LoginActivity;
 import com.getirhackathon.activity.ProductsFragment;
 import com.getirhackathon.activity.SepetFragment;
 import com.getirhackathon.activity.TakipFragment;
@@ -28,9 +27,6 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -79,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
         setContentView(R.layout.activity_main);
         mSocket.on("status",onNewMessage);
         mSocket.on("order_message",onNewMessage);
-        mSocket.on("message",onNewMessage);
         mSocket.connect();
         dialog = new ProgressDialog(this);
         //Assign toolbar..
@@ -122,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
     }
 
     private void displayView(int position) {
+
         Fragment fragment = null;
         String title = getString(R.string.app_name);
         switch (position) {
@@ -155,6 +151,20 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
 
 
     @Override
+    public void onBackPressed() {
+        Toast.makeText(this ,"adgadg" ,Toast.LENGTH_SHORT).show();
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1){
@@ -165,19 +175,6 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                 //fetchProducts();
             }
         }
-    }
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this, "adgadg", Toast.LENGTH_SHORT).show();
-        int count = getFragmentManager().getBackStackEntryCount();
-
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
-        } else {
-            getFragmentManager().popBackStack();
-        }
-
     }
 
     @Override
