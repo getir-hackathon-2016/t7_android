@@ -27,6 +27,13 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.MalformedJsonException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
             mSocket = IO.socket("https://getir-hackathon.herokuapp.com/");
         } catch (URISyntaxException e) {}
     }
+
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -51,16 +59,23 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                     @Override
                     public void run() {
                         dialog.dismiss();
-/*                        JSONObject data = (JSONObject) args[0];
+                        Log.d("SOCKET:INFO", args[0] + "");
                         try {
-                            if(data.getBoolean("success")){
-                                App.getInstance().addToSepet(Integer.parseInt(data.getString("product_id")),
-                                                        Integer.parseInt(data.getString("order_count")));
+
+                            JsonObject data = new JsonParser().parse(args[0].toString()).getAsJsonObject();
+
+                            if (data.get("success").getAsBoolean()) {
+                                App.getInstance().addToSepet(Integer.parseInt(data.get("product_id").getAsString()),
+                                        Integer.parseInt(data.get("order_count").getAsString()));
+                            } else {
+                                Toast.makeText(MainActivity.this, "Yeterli stok yok :(", Toast.LENGTH_SHORT);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } catch (IllegalStateException e) {
+
+                        } catch (ClassCastException e1){
+
                         }
-  */                      Log.d("SOCKET:INFO", args[0] + "");
+
 
                     }
                 });
@@ -107,12 +122,11 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
         dialog.show();
         if (TextUtils.isEmpty(message))
             return;
-        mSocket.emit("order", message, new Ack() {
-            @Override
-            public void call(Object... args) {
-                Log.d("SOCKET:IO",args[0]+"");
-            }
-        });
+        try {
+            mSocket.emit("order",new JSONObject(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -184,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
     }
 
     public void switchContent(DetailFragment frag) {
-        frag.show(getFragmentManager(),"blur");
+        frag.show(getFragmentManager(), "blur");
         /*
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.show(id, fragment, fragment.toString());
