@@ -91,17 +91,19 @@ public class DetailFragment extends BlurDialogFragment {
                 }
             }
         });
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 App.getInstance().addToSepet(product, Integer.parseInt(counterTextView.getText().toString()));
 
                 SharedPreferences pref = getActivity().getSharedPreferences("GETIR",Context.MODE_PRIVATE);
-                Order order = new Order().setOrderCount(counterTextView.getText().toString())
-                                        .setProductId(product.getId()+"")
-                                        .setStoreId(pref.getString("STORE_ID","1"))
-                                        .setToken(pref.getString("TOKEN","0"));
+                Order order = new Order().setOrderCount(Integer.parseInt(counterTextView.getText().toString()))
+                                        .setProductId(product.getId())
+                                        .setStoreId(Integer.parseInt(pref.getString("STORE_ID", "1")))
+                                                .setToken(pref.getString("TOKEN", "0"));
                 Log.d("DATA TO SOCKET",new Gson().toJson(order));
+
                 ((MainActivity)getActivity()).attemptSend(new Gson().toJson(order));
                 DetailFragment.this.dismiss();
             }
@@ -112,9 +114,9 @@ public class DetailFragment extends BlurDialogFragment {
 
     class Order{
         private String token;
-        private String store_id;
-        private String product_id;
-        private String order_count;
+        private int store_id;
+        private int product_id;
+        private int order_count;
 
         public Order(){
 
@@ -125,17 +127,17 @@ public class DetailFragment extends BlurDialogFragment {
             return this;
         }
 
-        public Order setStoreId(String store_id) {
+        public Order setStoreId(int store_id) {
             this.store_id = store_id;
             return this;
         }
 
-        public Order setProductId(String product_id) {
+        public Order setProductId(int product_id) {
             this.product_id = product_id;
             return this;
         }
 
-        public Order setOrderCount(String order_count) {
+        public Order setOrderCount(int order_count) {
             this.order_count = order_count;
             return this;
         }
